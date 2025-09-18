@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Função do Primeiro Grau</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+            animation: moveCircle1 15s infinite linear;
+        }
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+            animation: moveCircle2 12s infinite linear;
+        }
+        @keyframes moveCircle1 {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 100px); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes moveCircle2 {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-100px, -100px); }
+            100% { transform: translate(0, 0); }
+        }
+        .title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        .subtitle {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .button {
+            background-color: #3f51b5;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            background-color: #5c6bc0;
+        }
+        .question-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        .option {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .option:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: scale(1.02);
+        }
+        .option.correct {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            animation: pulse 0.5s infinite alternate;
+        }
+        .option.incorrect {
+            background-color: #F44336;
+            border-color: #F44336;
+        }
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        .navigation-button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .navigation-button:hover {
+            background-color: #155bb5;
+        }
+        .results-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        .results-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .score-text {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .restart-button {
+            background-color: #ff9800;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .restart-button:hover {
+            background-color: #e68900;
+            transform: translateY(-5px);
+        }
+        .hidden {
+            display: none;
+        }
+        .rationale-text {
+            font-size: 0.9rem;
+            text-align: left;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Tela de Seleção de Perguntas -->
+        <div id="start-screen">
+            <h1 class="title">Quiz de Função do Primeiro Grau</h1>
+            <p class="subtitle">Selecione o número de perguntas:</p>
+            <div class="button-group">
+                <button class="button" onclick="startQuiz(5)">5 Perguntas</button>
+                <button class="button" onclick="startQuiz(10)">10 Perguntas</button>
+                <button class="button" onclick="startQuiz(15)">15 Perguntas</button>
+            </div>
+        </div>
+
+        <!-- Tela do Quiz -->
+        <div id="quiz-screen" class="hidden">
+            <div class="question-card">
+                <p id="question-counter" class="text-sm text-gray-300 mb-2"></p>
+                <p id="question-text" class="question-text"></p>
+                <div id="options-container" class="options-grid"></div>
+                <p id="rationale-text" class="rationale-text hidden"></p>
+            </div>
+            <div class="navigation-buttons">
+                <button id="prev-button" class="navigation-button hidden">Anterior</button>
+                <button id="next-button" class="navigation-button" disabled>Próxima</button>
+            </div>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="results-screen" class="hidden">
+            <div class="results-card">
+                <h2 class="results-title">Resultados do Quiz</h2>
+                <p id="score-text" class="score-text"></p>
+                <button class="restart-button" onclick="restartQuiz()">Recomeçar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados do quiz: perguntas, opções e respostas
+        const allQuestions = [
+            {
+                question: "O que é uma função de primeiro grau?",
+                options: [
+                    { text: "Uma função onde a maior potência da variável é 1.", isCorrect: true, rationale: "Uma função de primeiro grau é definida por um polinômio de grau 1, onde a maior potência da variável independente é 1. Sua forma geral é $f(x) = ax + b$, com $a \\ne 0$." },
+                    { text: "Uma função onde a variável está no denominador.", isCorrect: false, rationale: "Essa é a definição de uma função racional. Funções de primeiro grau não têm a variável no denominador." },
+                    { text: "Uma função com uma parábola como gráfico.", isCorrect: false, rationale: "O gráfico de uma função com uma parábola é uma função de segundo grau, ou quadrática." },
+                    { text: "Uma função que sempre passa pela origem.", isCorrect: false, rationale: "Uma função de primeiro grau só passa pela origem se o coeficiente linear ($b$) for zero, como em $f(x) = ax$. Em geral, ela não passa." }
+                ]
+            },
+            {
+                question: "Qual o gráfico de uma função de primeiro grau?",
+                options: [
+                    { text: "Uma parábola.", isCorrect: false, rationale: "O gráfico de uma parábola é de uma função quadrática (segundo grau)." },
+                    { text: "Uma reta.", isCorrect: true, rationale: "O gráfico de toda função de primeiro grau ($f(x) = ax + b$) é uma reta." },
+                    { text: "Uma curva.", isCorrect: false, rationale: "Embora uma reta seja um tipo de curva, o termo 'curva' geralmente se refere a gráficos não-lineares. O termo mais preciso é 'reta'." },
+                    { text: "Uma hipérbole.", isCorrect: false, rationale: "O gráfico de uma hipérbole é típico de funções inversas, como $f(x) = 1/x$, que não são de primeiro grau." }
+                ]
+            },
+            {
+                question: "Em $f(x) = 2x + 3$, qual é o coeficiente angular?",
+                options: [
+                    { text: "3", isCorrect: false, rationale: "O número 3 é o coeficiente linear, que indica onde a reta corta o eixo y." },
+                    { text: "2", isCorrect: true, rationale: "Em uma função $f(x) = ax + b$, o coeficiente angular ($a$) é o número que multiplica o $x$." },
+                    { text: "x", isCorrect: false, rationale: "A letra $x$ é a variável independente, não o coeficiente angular." },
+                    { text: "$f(x)$", isCorrect: false, rationale: "$f(x)$ é a notação da função, representando o valor de $y$ para um dado $x$." }
+                ]
+            },
+            {
+                question: "O que o coeficiente angular ($a$) indica em $f(x) = ax + b$?",
+                options: [
+                    { text: "Onde a reta corta o eixo y.", isCorrect: false, rationale: "Essa é a definição do coeficiente linear ($b$). O coeficiente angular indica a inclinação da reta." },
+                    { text: "A inclinação da reta.", isCorrect: true, rationale: "O coeficiente angular ($a$) é o valor que determina a inclinação da reta. Se $a > 0$, a função é crescente. Se $a < 0$, é decrescente." },
+                    { text: "Onde a reta corta o eixo x.", isCorrect: false, rationale: "Onde a reta corta o eixo x é chamado de raiz ou zero da função." },
+                    { text: "O ponto de máximo da função.", isCorrect: false, rationale: "Funções de primeiro grau não têm pontos de máximo ou mínimo, pois são retas que se estendem infinitamente em ambas as direções." }
+                ]
+            },
+            {
+                question: "Em $f(x) = 2x - 4$, qual é o coeficiente linear?",
+                options: [
+                    { text: "-4", isCorrect: true, rationale: "Em uma função $f(x) = ax + b$, o coeficiente linear ($b$) é o termo constante, que não multiplica a variável $x$." },
+                    { text: "2", isCorrect: false, rationale: "O número 2 é o coeficiente angular." },
+                    { text: "x", isCorrect: false, rationale: "A letra $x$ é a variável, não um coeficiente." },
+                    { text: "$f(x)$", isCorrect: false, rationale: "$f(x)$ é a notação da função." }
+                ]
+            },
+            {
+                question: "O que o coeficiente linear ($b$) indica em $f(x) = ax + b$?",
+                options: [
+                    { text: "A inclinação da reta.", isCorrect: false, rationale: "A inclinação da reta é indicada pelo coeficiente angular ($a$). O coeficiente linear indica o ponto de corte com o eixo y." },
+                    { text: "Onde a reta corta o eixo x.", isCorrect: false, rationale: "O ponto de corte com o eixo x é a raiz da função." },
+                    { text: "Onde a reta corta o eixo y.", isCorrect: true, rationale: "O coeficiente linear ($b$) é o valor de $y$ quando $x = 0$, ou seja, o ponto onde a reta intercepta o eixo y." },
+                    { text: "O ponto de mínimo da função.", isCorrect: false, rationale: "Funções de primeiro grau não têm pontos de máximo ou mínimo." }
+                ]
+            },
+            {
+                question: "Para a função $f(x) = 5x + 1$, qual é o valor de $f(2)$?",
+                options: [
+                    { text: "6", isCorrect: false, rationale: "Você deve substituir o $x$ por 2, não somar 2. O cálculo correto é $5 \\cdot 2 + 1 = 11$." },
+                    { text: "11", isCorrect: true, rationale: "Para encontrar $f(2)$, você substitui $x$ por 2 na equação: $f(2) = 5(2) + 1 = 10 + 1 = 11$." },
+                    { text: "7", isCorrect: false, rationale: "A operação correta é a multiplicação de 5 por 2 antes da soma." },
+                    { text: "12", isCorrect: false, rationale: "Para obter 12, a operação teria que ser $5 \\cdot 2 + 2$ ou $5 \\cdot 3 - 3$, que não são a função dada." }
+                ]
+            },
+            {
+                question: "Qual o zero da função $f(x) = 3x - 9$?",
+                options: [
+                    { text: "9", isCorrect: false, rationale: "O zero da função é o valor de $x$ que torna $f(x) = 0$. $3x-9=0$ leva a $3x=9$, e não a $x=9$." },
+                    { text: "3", isCorrect: true, rationale: "Para encontrar o zero da função, igualamos $f(x)$ a zero: $3x - 9 = 0 \\rightarrow 3x = 9 \\rightarrow x = 3$." },
+                    { text: "-3", isCorrect: false, rationale: "A substituição de -3 na função resulta em $3(-3) - 9 = -9-9 = -18 \\ne 0$." },
+                    { text: "-9", isCorrect: false, rationale: "O zero da função é o valor de $x$ que zera a função. -9 é o coeficiente linear." }
+                ]
+            },
+            {
+                question: "Quando uma função de primeiro grau é crescente?",
+                options: [
+                    { text: "Quando o coeficiente angular é positivo ($a > 0$).", isCorrect: true, rationale: "A inclinação da reta é positiva. A medida que $x$ aumenta, o valor de $f(x)$ também aumenta." },
+                    { text: "Quando o coeficiente angular é negativo ($a < 0$).", isCorrect: false, rationale: "Quando o coeficiente angular é negativo, a função é decrescente." },
+                    { text: "Quando o coeficiente linear é positivo.", isCorrect: false, rationale: "O valor do coeficiente linear ($b$) não determina se a função é crescente ou decrescente, ele apenas indica o ponto de corte com o eixo y." },
+                    { text: "Quando o coeficiente linear é negativo.", isCorrect: false, rationale: "O valor do coeficiente linear ($b$) não determina se a função é crescente ou decrescente." }
+                ]
+            },
+            {
+                question: "Quando uma função de primeiro grau é decrescente?",
+                options: [
+                    { text: "Quando o coeficiente angular é positivo ($a > 0$).", isCorrect: false, rationale: "Quando o coeficiente angular é positivo, a função é crescente." },
+                    { text: "Quando o coeficiente angular é negativo ($a < 0$).", isCorrect: true, rationale: "A inclinação da reta é negativa. A medida que $x$ aumenta, o valor de $f(x)$ diminui." },
+                    { text: "Quando o coeficiente linear é positivo.", isCorrect: false, rationale: "O valor do coeficiente linear ($b$) não determina se a função é crescente ou decrescente." },
+                    { text: "Quando o coeficiente linear é negativo.", isCorrect: false, rationale: "O valor do coeficiente linear ($b$) não determina se a função é crescente ou decrescente." }
+                ]
+            },
+            {
+                question: "Se $f(x) = x + 5$, o que $f(0)$ representa?",
+                options: [
+                    { text: "A inclinação da reta.", isCorrect: false, rationale: "A inclinação é o coeficiente que multiplica $x$, que neste caso é 1." },
+                    { text: "A raiz da função.", isCorrect: false, rationale: "A raiz da função é o valor de $x$ quando $f(x) = 0$." },
+                    { text: "Onde a reta corta o eixo y.", isCorrect: true, rationale: "O valor de $f(0)$ é o ponto onde a reta cruza o eixo y. Em $f(x) = x + 5$, $f(0) = 0 + 5 = 5$." },
+                    { text: "Onde a reta corta o eixo x.", isCorrect: false, rationale: "O ponto onde a reta corta o eixo x é a raiz da função, que é $x = -5$." }
+                ]
+            },
+            {
+                question: "A função $y = 3$ é uma função de primeiro grau?",
+                options: [
+                    { text: "Sim, é uma função constante, que é um caso especial de função afim.", isCorrect: true, rationale: "Uma função constante, como $y = 3$, pode ser escrita na forma $f(x) = 0x + 3$. É um caso especial de função de primeiro grau onde o coeficiente angular é zero." },
+                    { text: "Não, porque não tem a variável x.", isCorrect: false, rationale: "Embora a variável $x$ não apareça explicitamente, ela está presente com um coeficiente de zero, ou seja, $y=0x+3$." },
+                    { text: "Sim, é uma função linear.", isCorrect: false, rationale: "Uma função linear é um tipo de função de primeiro grau que sempre passa pela origem ($f(x) = ax$), como $f(x) = 2x$. A função $y = 3$ não é linear." },
+                    { text: "Não, o gráfico dela é uma parábola.", isCorrect: false, rationale: "O gráfico de $y=3$ é uma reta horizontal, não uma parábola." }
+                ]
+            },
+            {
+                question: "Qual a equação que representa o gráfico de uma reta passando por $(0, 2)$ e $(1, 5)$?",
+                options: [
+                    { text: "$y = 5x + 2$", isCorrect: false, rationale: "O ponto $(0, 2)$ é o coeficiente linear, o que está correto. Mas o ponto $(1, 5)$ daria $5(1)+2 = 7$, que não é 5. A inclinação está errada." },
+                    { text: "$y = 3x + 2$", isCorrect: true, rationale: "O ponto $(0, 2)$ indica que o coeficiente linear ($b$) é 2. A inclinação ($a$) é calculada como $(5-2)/(1-0) = 3$. Portanto, a equação é $y = 3x + 2$." },
+                    { text: "$y = 2x + 5$", isCorrect: false, rationale: "O ponto $(0, 5)$ indicaria o coeficiente linear como 5, o que não é o caso aqui. A equação $y=2x+5$ não passa por $(0, 2)$." },
+                    { text: "$y = 3x + 5$", isCorrect: false, rationale: "O coeficiente linear estaria incorreto, pois o ponto de corte com o eixo y é $(0, 2)$, não $(0, 5)$." }
+                ]
+            },
+            {
+                question: "Qual o zero da função $f(x) = -2x + 4$?",
+                options: [
+                    { text: "-2", isCorrect: false, rationale: "O zero da função é o valor de $x$ que torna $f(x) = 0$. $f(-2) = -2(-2) + 4 = 4+4 = 8 \\ne 0$." },
+                    { text: "2", isCorrect: true, rationale: "Para encontrar o zero da função, igualamos $f(x)$ a zero: $-2x + 4 = 0 \\rightarrow 4 = 2x \\rightarrow x = 2$." },
+                    { text: "4", isCorrect: false, rationale: "O número 4 é o coeficiente linear, o valor de $f(0)$. Ele não é o zero da função." },
+                    { text: "-4", isCorrect: false, rationale: "A substituição de -4 na função resulta em $f(-4) = -2(-4) + 4 = 8+4 = 12 \\ne 0$." }
+                ]
+            },
+            {
+                question: "Se $f(x) = 2x$, qual o valor de $f(3)$?",
+                options: [
+                    { text: "6", isCorrect: true, rationale: "Para encontrar $f(3)$, substituímos $x$ por 3 na equação: $f(3) = 2(3) = 6$." },
+                    { text: "5", isCorrect: false, rationale: "O cálculo correto é uma multiplicação, não uma soma." },
+                    { text: "2", isCorrect: false, rationale: "O número 2 é o coeficiente angular. O valor de $f(3)$ é o resultado da operação." },
+                    { text: "8", isCorrect: false, rationale: "Para o resultado ser 8, o valor de $x$ teria que ser 4, pois $2 \\cdot 4 = 8$." }
+                ]
+            }
+        ];
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let quizSize;
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const scoreText = document.getElementById('score-text');
+        const rationaleText = document.getElementById('rationale-text');
+        const nextButton = document.getElementById('next-button');
+        const prevButton = document.getElementById('prev-button');
+
+        // Função para embaralhar um array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Inicia o quiz com o número de perguntas selecionado
+        function startQuiz(size) {
+            quizSize = size;
+            shuffleArray(allQuestions);
+            questions = allQuestions.slice(0, quizSize);
+            userAnswers = Array(quizSize).fill(null);
+            currentQuestionIndex = 0;
+            score = 0;
+
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            showQuestion();
+        }
+
+        // Exibe a pergunta atual
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            questionCounter.textContent = `Pergunta ${currentQuestionIndex + 1} de ${quizSize}`;
+            questionText.textContent = question.question;
+            optionsContainer.innerHTML = '';
+            rationaleText.classList.add('hidden');
+            nextButton.disabled = true;
+            
+            // Cria botões de opção
+            shuffleArray(question.options);
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('option');
+                button.onclick = () => selectOption(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            // Atualiza a visibilidade dos botões de navegação
+            prevButton.classList.toggle('hidden', currentQuestionIndex === 0);
+            nextButton.textContent = (currentQuestionIndex === quizSize - 1) ? 'Finalizar' : 'Próxima';
+            
+            // Reabilita as opções se já tiver sido respondida anteriormente
+            if (userAnswers[currentQuestionIndex] !== null) {
+                selectOption(userAnswers[currentQuestionIndex], true);
+            }
+        }
+
+        // Lida com a seleção de uma opção
+        function selectOption(selectedIndex, isRevisit = false) {
+            const currentQuestion = questions[currentQuestionIndex];
+            const options = optionsContainer.querySelectorAll('.option');
+            
+            if (!isRevisit) {
+                userAnswers[currentQuestionIndex] = selectedIndex;
+            }
+
+            // Desabilita todas as opções
+            options.forEach(option => option.disabled = true);
+            
+            const selectedOption = currentQuestion.options[selectedIndex];
+            
+            // Destaca a opção selecionada
+            options[selectedIndex].classList.add('selected');
+
+            // Adiciona classe de cor para correto/incorreto
+            if (selectedOption.isCorrect) {
+                options[selectedIndex].classList.add('correct');
+            } else {
+                options[selectedIndex].classList.add('incorrect');
+                // Destaca a resposta correta também
+                const correctIndex = currentQuestion.options.findIndex(opt => opt.isCorrect);
+                options[correctIndex].classList.add('correct');
+            }
+
+            // Exibe a razão para a resposta
+            rationaleText.textContent = selectedOption.rationale;
+            rationaleText.classList.remove('hidden');
+            nextButton.disabled = false;
+        }
+
+        // Navega para a próxima pergunta
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] !== null) {
+                if (currentQuestionIndex < quizSize - 1) {
+                    currentQuestionIndex++;
+                    showQuestion();
+                } else {
+                    calculateScore();
+                    showResults();
+                }
+            }
+        }
+        
+        // Navega para a pergunta anterior
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        // Calcula a pontuação final
+        function calculateScore() {
+            score = 0;
+            for (let i = 0; i < quizSize; i++) {
+                const question = questions[i];
+                const selectedIndex = userAnswers[i];
+                if (question.options[selectedIndex].isCorrect) {
+                    score++;
+                }
+            }
+        }
+
+        // Exibe a tela de resultados
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            scoreText.textContent = `Você acertou ${score} de ${quizSize} perguntas!`;
+        }
+        
+        // Reinicia o quiz
+        function restartQuiz() {
+            resultsScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+
+        nextButton.onclick = nextQuestion;
+        prevButton.onclick = prevQuestion;
+    </script>
+</body>
+</html>
